@@ -9,7 +9,6 @@ masses = {'Boc':  101.126,
           'Pbf':  253.338,
           'Trt':  243.331}
 
-
 scs = {'Boc': ['K', 'H', 'W'],
        'tBu': ['Y', 'S', 'T', 'D', 'E'],
        'NH2': ['K', 'H', 'W', 'Q', 'N'],
@@ -18,6 +17,21 @@ scs = {'Boc': ['K', 'H', 'W'],
 
 
 def pepattr(seq):
+    """
+    Create possible side chain mutations from sequence.
+
+    Parameters
+    ----------
+    seq : string
+        One letter code sequence string
+
+    Returns
+    -------
+    permut : dict
+        Dictionary containing possible protecting groups
+        and the ranges of possible additions.
+
+    """
     permut = {k: 0 for k in scs.keys()}
     # Permute every amino acid
     for aa in seq:
@@ -29,6 +43,22 @@ def pepattr(seq):
 
 
 def pepcut(seq, N=3):
+    """
+    Cuts amino acids from the sequence string.
+
+    Parameters
+    ----------
+    seq : string
+        One letter code sequence string
+    N : int (default=3)
+        Number of amino acids to cut from the sequence
+
+    Returns
+    -------
+    seqlist : list
+        List of all possible permutations
+
+    """
     seqlist = [seq]
     for n in range(N):
         # Cuts n amino acids from the sequence
@@ -36,10 +66,28 @@ def pepcut(seq, N=3):
     return seqlist
 
 
-def permute(seq, target_mass, eps=0.9):
+def permute(seq, target_mass, eps=0.9, N=3):
+    """
+    Permutes the sequence and compares the permutations to the target mass
+    with a given accuracy epsilon.
+
+    Parameters
+    ----------
+    seq : string
+        One letter code sequence string
+    target_mass : float
+        The target mass to compare to the permutation
+    eps : float (default=0.9)
+        Maximum deviation of the test mass from the target mass.
+        Should be chosen according to the accuracy of the mass
+        spectrometer instrument.
+    N : int (default=3)
+        Number of amino acids to cut from the sequence
+
+    """
     mol = Chem.rdmolfiles.MolFromSequence(seq)
     orig_mass = ExactMolWt(mol)
-    for p in pepcut(seq, 3):
+    for p in pepcut(seq, N):
         print(p)
         # Create all possible permutations from side chains and sequences
         for pp in product(*pepattr(p).values()):
