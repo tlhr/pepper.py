@@ -42,7 +42,7 @@ def pepattr(seq):
     return {k: range(0, 1 + v) for k, v in permut.items()}
 
 
-def pepcut(seq, N=3):
+def pepcut(seqlist, n=3):
     """
     Cuts amino acids from the sequence string.
 
@@ -59,11 +59,14 @@ def pepcut(seq, N=3):
         List of all possible permutations
 
     """
-    seqlist = [seq]
-    for n in range(N):
-        # Cuts n amino acids from the sequence
-        seqlist.extend([seq[:i] + seq[i+n+1:] for i, aa in enumerate(seq)])
-    return seqlist
+    if n == 0:
+        return [seqlist]
+    else:
+        plist = []
+        for seq in seqlist:
+            for i, _ in enumerate(seq):
+                plist.append(seq[:i] + seq[i+1:])
+        return pepcut(plist, n-1)
 
 
 def permute(seq, target_mass, eps=0.9, N=3):
@@ -87,7 +90,7 @@ def permute(seq, target_mass, eps=0.9, N=3):
     """
     mol = Chem.rdmolfiles.MolFromSequence(seq)
     orig_mass = ExactMolWt(mol)
-    for p in pepcut(seq, N):
+    for p in pepcut([seq], N):
         print(p)
         # Create all possible permutations from side chains and sequences
         for pp in product(*pepattr(p).values()):
