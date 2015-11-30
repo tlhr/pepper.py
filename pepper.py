@@ -60,13 +60,13 @@ def pepcut(seqlist, n=3):
 
     """
     if n == 0:
-        return [seqlist]
+        return seqlist
     else:
         plist = []
         for seq in seqlist:
             for i, _ in enumerate(seq):
                 plist.append(seq[:i] + seq[i+1:])
-        return pepcut(plist, n-1)
+        return pepcut(plist, n-1) + seqlist
 
 
 def permute(seq, target_mass, eps=0.9, N=3):
