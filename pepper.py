@@ -48,9 +48,9 @@ def pepcut(seqlist, n=3):
 
     Parameters
     ----------
-    seq : string
-        One letter code sequence string
-    N : int (default=3)
+    seqlist : list
+        List of one letter code sequence strings
+    n : int (default=3)
         Number of amino acids to cut from the sequence
 
     Returns
